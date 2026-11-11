@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C: Remote Attach",
+            "type": "gdb",
+            "request": "attach",
+            "executable": "${workspaceFolder}/build/baremetal.elf",
+            "cwd": "${workspaceFolder}",
+            "target": "localhost:1234",
+            "remote": true,
+            "gdbpath": "/usr/bin/gdb-multiarch"
+        }
+    ]
+}
