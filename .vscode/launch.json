@@ -3,13 +3,15 @@
     "configurations": [
         {
             "name": "C: Remote Attach",
-            "type": "gdb",
-            "request": "attach",
-            "executable": "${workspaceFolder}/build/baremetal.elf",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/baremetal.elf",
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "target": "localhost:1234",
-            "remote": true,
-            "gdbpath": "/usr/bin/gdb-multiarch"
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "miDebuggerServerAddress": "localhost:1234"
         }
     ]
 }
