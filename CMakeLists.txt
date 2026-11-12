@@ -27,27 +27,23 @@ set_target_properties(baremetal.elf PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/
 
 # -bios none: no OpenSBI firmware, so the program starts in machine mode at 0x80000000.
 # The ELF is passed straight to -kernel, so QEMU loads it at its linked address
+set(QEMU_COMMAND
+    qemu-system-riscv64
+    -M virt
+    -bios none
+    -nographic
+    -serial telnet:localhost:5678,server=on,wait=off
+    -kernel baremetal.elf)
+
 add_custom_target(qemu
-    COMMAND qemu-system-riscv64
-        -M virt
-        -bios none
-        -nographic
-        -serial telnet:localhost:5678,server=on,wait=off
-        -kernel baremetal.elf
+    COMMAND ${QEMU_COMMAND}
     DEPENDS baremetal.elf
     USES_TERMINAL
     VERBATIM
 )
 
 add_custom_target(qemu_debug
-    COMMAND qemu-system-riscv64
-        -M virt
-        -bios none
-        -nographic
-        -serial telnet:localhost:5678,server=on,wait=off
-        -kernel baremetal.elf
-        -S
-        -s
+    COMMAND ${QEMU_COMMAND} -S -s
     DEPENDS baremetal.elf
     USES_TERMINAL
     VERBATIM
