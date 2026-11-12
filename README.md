@@ -1,6 +1,6 @@
 # Bare metal C example for QEMU RISC-V "virt" machine (RV64IMAC)
 
-A RISC-V port of [test-qemu-arm-virt](../test-qemu-arm-virt): it prints over the UART, and in release builds a device interrupt through the PLIC ("hardware") triggers a software interrupt, which reads shared data inside a critical section.
+It prints over the UART, and in release builds a device interrupt through the PLIC ("hardware") triggers a software interrupt, which reads shared data inside a critical section.
 
 ## Prerequisites
 
@@ -54,7 +54,7 @@ These flags are required:
 - `-nostdlib`: don't link a C library or startup files (`crt0.o`).
 - `-T linker.ld`: sets the memory layout and the 0x80000000 load address.
 
-You could also build with Ubuntu's Linux cross compiler, `riscv64-linux-gnu-gcc` (`gcc-riscv64-linux-gnu` package), just like test-qemu-arm-virt originally used `aarch64-linux-gnu-gcc`. Set `CMAKE_C_COMPILER`/`CMAKE_ASM_COMPILER` to `riscv64-linux-gnu-gcc`, delete `build/` and reconfigure, and add flags that undo its Linux defaults:
+You could also build with Ubuntu's Linux cross compiler, `riscv64-linux-gnu-gcc` (`gcc-riscv64-linux-gnu` package). Set `CMAKE_C_COMPILER`/`CMAKE_ASM_COMPILER` to `riscv64-linux-gnu-gcc`, delete `build/` and reconfigure, and add flags that undo its Linux defaults:
 
 - `-fno-pie` (compile) and `-static -no-pie` (link): it builds position-independent executables by default.
 - `-Wl,--build-id=none`: it tells the linker to add a `.note.gnu.build-id` section.
@@ -66,4 +66,5 @@ The catch with `riscv64-linux-gnu-gcc` is that its libgcc is built only for its 
 ## Notes
 
 - QEMU's default `rv64` CPU implements many more extensions than RV64IMAC. That doesn't matter, since the compiler only emits RV64IMAC instructions (check with `riscv64-unknown-elf-objdump -d build/baremetal.elf`)
+- If a watchdog timer is desired, the Intel 6300ESB `-device i6300esb` PCIe device is available to add to the `qemu-system-riscv64` command. With `-bios none` nothing sets up PCI, so the program has to find it through the PCIe ECAM at 0x30000000 and place its BAR in the PCI memory window at 0x40000000. QEMU doesn't implement its stage 1 interrupt, so it can only reset the machine
 - If you want to read UART messages from a /dev file, add `-serial pty` to the `qemu-system-riscv64` command, then run `screen /dev/pts/?` where ? is the value given by QEMU
